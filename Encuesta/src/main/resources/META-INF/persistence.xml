@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<persistence-unit name="Encuesta" transaction-type="RESOURCE_LOCAL" >
+		<class>com.encuesta.model.Alternativa</class>
+		<class>com.encuesta.model.Anio</class>
+		<class>com.encuesta.model.AsignacionProfesor</class>
+		<class>com.encuesta.model.Aula</class>
+		<class>com.encuesta.model.Carrera</class>
+		<class>com.encuesta.model.Ciclo</class>
+		<class>com.encuesta.model.Curso</class>
+		<class>com.encuesta.model.Dominio</class>
+		<class>com.encuesta.model.Encuesta</class>
+		<class>com.encuesta.model.EncuestaAlumno</class>
+		<class>com.encuesta.model.EncuestaProfesor</class>
+		<class>com.encuesta.model.Marcada</class>
+		<class>com.encuesta.model.Matricula</class>
+		<class>com.encuesta.model.NumeroEncuesta</class>
+		<class>com.encuesta.model.Pregunta</class>
+		<class>com.encuesta.model.ProfesoCurso</class>
+		<class>com.encuesta.model.TipoEncuesta</class>
+		<class>com.encuesta.model.Usuario</class>
+		<class>com.encuesta.model.Acceso</class>
+		<class>com.encuesta.model.Cargo</class>
+		<class>com.encuesta.model.Menu</class>
+	
+	</persistence-unit>
+</persistence>
