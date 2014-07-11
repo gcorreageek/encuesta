@@ -1,6 +1,7 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
 
 
@@ -10,6 +11,9 @@ import javax.persistence.*;
  */
 @Entity
 @NamedQuery(name="Acceso.findAll", query="SELECT a FROM Acceso a")
+@NamedQueries({  
+	@NamedQuery(name="Acceso.findIdCargo", query="SELECT u FROM Acceso u WHERE u.cargo.idCargo = ?1")
+})
 public class Acceso implements Serializable {
 	private static final long serialVersionUID = 1L;
 

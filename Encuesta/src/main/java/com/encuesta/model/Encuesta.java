@@ -1,7 +1,9 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.List;
 
 
@@ -11,12 +13,18 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Encuesta.findAll", query="SELECT e FROM Encuesta e")
+@NamedQueries({ // findCicloXIdAnio
+	@NamedQuery(name="Encuesta.findId", query="SELECT u FROM Encuesta u WHERE u.idEncuesta = ?1 "), 
+	@NamedQuery(name="Encuesta.findNombreReferente", query="SELECT u FROM Encuesta u WHERE u.nombreReferente like ?1 ")
+})
 public class Encuesta implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int idEncuesta;
+	
+	private String nombreReferente;
 
 	//bi-directional many-to-one association to Anio
 	@ManyToOne
@@ -92,6 +100,14 @@ public class Encuesta implements Serializable {
 		encuestaprofesor.setEncuesta(null);
 
 		return encuestaprofesor;
+	}
+
+	public String getNombreReferente() {
+		return nombreReferente;
+	}
+
+	public void setNombreReferente(String nombreReferente) {
+		this.nombreReferente = nombreReferente;
 	}
 
 }

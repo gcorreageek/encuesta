@@ -16,7 +16,7 @@ public class TipoEncuesta implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int idEncuesta;
+	private int idTipoEncuesta;
 
 	private String encuesta;
 
@@ -34,13 +34,7 @@ public class TipoEncuesta implements Serializable {
 	public TipoEncuesta() {
 	}
 
-	public int getIdEncuesta() {
-		return this.idEncuesta;
-	}
-
-	public void setIdEncuesta(int idEncuesta) {
-		this.idEncuesta = idEncuesta;
-	}
+	 
 
 	public String getEncuesta() {
 		return this.encuesta;
@@ -86,6 +80,18 @@ public class TipoEncuesta implements Serializable {
 
 	public void setCiclo(Ciclo ciclo) {
 		this.ciclo = ciclo;
+	}
+
+
+
+	public int getIdTipoEncuesta() {
+		return idTipoEncuesta;
+	}
+
+
+
+	public void setIdTipoEncuesta(int idTipoEncuesta) {
+		this.idTipoEncuesta = idTipoEncuesta;
 	}
 
 }

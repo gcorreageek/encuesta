@@ -12,4 +12,9 @@ public interface DominioService {
 	List<Dominio> listar()throws Exception;
 	List<Dominio> buscarXIdDominio(Dominio a)throws Exception; 
 	List<Dominio> buscarXCampo(Dominio a)throws Exception;
+	List<Dominio> listarModalidad()throws Exception;
+	List<Dominio> listarAnio()throws Exception;
+	List<Dominio> listarNumero()throws Exception;
+	List<Dominio> listarCiclo()throws Exception;
+	List<Dominio> listarSeccion()throws Exception;
 }

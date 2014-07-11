@@ -1,7 +1,10 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -11,6 +14,10 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Curso.findAll", query="SELECT c FROM Curso c")
+@NamedQueries({  
+	@NamedQuery(name="Curso.findId", query="SELECT u FROM Curso u WHERE u.idCurso = ?1"),
+	@NamedQuery(name="Curso.findCurso", query="SELECT u FROM Curso u WHERE u.curso like ?1")
+})
 public class Curso implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -31,8 +38,9 @@ public class Curso implements Serializable {
 	private List<Anio> anios;
 
 	//bi-directional many-to-one association to Profesocurso
-	@OneToMany(mappedBy="curso")
-	private List<ProfesoCurso> profesocursos;
+//	@OneToMany(mappedBy="curso", fetch=FetchType.LAZY )
+	@OneToMany(mappedBy="curso"  )
+	private List<ProfesoCurso> profesocursos  = new ArrayList<ProfesoCurso>();
 
 	public Curso() {
 	}

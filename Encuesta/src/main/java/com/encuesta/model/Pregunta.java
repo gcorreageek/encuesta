@@ -1,7 +1,10 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -11,6 +14,10 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Pregunta.findAll", query="SELECT p FROM Pregunta p")
+@NamedQueries({  
+	@NamedQuery(name="Pregunta.findId", query="SELECT u FROM Pregunta u WHERE u.idPregunta = ?1 "),
+	@NamedQuery(name="Pregunta.findIdNumeroEncuesta", query="SELECT u FROM Pregunta u WHERE u.numeroencuesta.idNumeroEncuesta = ?1   ")
+})
 public class Pregunta implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -91,6 +98,9 @@ public class Pregunta implements Serializable {
 	}
 
 	public List<Alternativa> getAlternativas() {
+		if(this.alternativas==null){
+			this.alternativas = new ArrayList<Alternativa>();
+		}
 		return this.alternativas;
 	}
 

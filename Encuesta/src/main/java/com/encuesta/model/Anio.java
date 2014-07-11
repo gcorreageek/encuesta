@@ -1,7 +1,10 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +15,11 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Anio.findAll", query="SELECT a FROM Anio a")
+@NamedQueries({ // findCicloXIdAnio
+	@NamedQuery(name="Anio.findId", query="SELECT u FROM Anio u WHERE u.idAnio = ?1"), 
+	@NamedQuery(name="Anio.findVarios", query="SELECT u FROM Anio u WHERE u.ciclo.idCiclo = ?1 and u.carrera.idCarrera = ?2 "
+			+ " and u.cicloAcademicoD = ?3 and u.curso.idCurso = ?4 and u.sessionD = ?5 ")
+})
 public class Anio implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -21,6 +29,9 @@ public class Anio implements Serializable {
 
 	@Column(name="ciclo_academico_d")
 	private int cicloAcademicoD;
+	
+	@Transient
+	private Dominio cicloAcademidoDominio;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fecha;
@@ -36,6 +47,8 @@ public class Anio implements Serializable {
 
 	@Column(name="session_d")
 	private int sessionD;
+	@Transient
+	private Dominio sessionDominio;
 
 	//bi-directional many-to-one association to Carrera
 	@ManyToOne
@@ -53,12 +66,14 @@ public class Anio implements Serializable {
 	private Curso curso;
 
 	//bi-directional many-to-one association to Asignacionprofesor
-	@OneToMany(mappedBy="anio")
-	private List<AsignacionProfesor> asignacionprofesors;
+//	@OneToMany(mappedBy="anio", fetch=FetchType.EAGER )
+	@OneToMany(mappedBy="anio"  )
+	private List<AsignacionProfesor> asignacionprofesors = new ArrayList<AsignacionProfesor>();
 
 	//bi-directional many-to-one association to Encuesta
 	@OneToMany(mappedBy="anio")
 	private List<Encuesta> encuestas;
+
 
 	public Anio() {
 	}
@@ -185,6 +200,26 @@ public class Anio implements Serializable {
 		encuesta.setAnio(null);
 
 		return encuesta;
+	}
+
+	public Dominio getCicloAcademidoDominio() {
+		if(cicloAcademidoDominio == null)
+			cicloAcademidoDominio = new Dominio();
+		return cicloAcademidoDominio;
+	}
+
+	public void setCicloAcademidoDominio(Dominio cicloAcademidoDominio) {
+		this.cicloAcademidoDominio = cicloAcademidoDominio;
+	}
+
+	public Dominio getSessionDominio() {
+		if(sessionDominio==null)
+			sessionDominio = new Dominio();
+		return sessionDominio;
+	}
+
+	public void setSessionDominio(Dominio sessionDominio) {
+		this.sessionDominio = sessionDominio;
 	}
 
 }

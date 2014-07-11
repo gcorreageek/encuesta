@@ -1,7 +1,9 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.List;
 
 
@@ -11,6 +13,10 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Carrera.findAll", query="SELECT c FROM Carrera c")
+@NamedQueries({  
+	@NamedQuery(name="Carrera.findId", query="SELECT u FROM Carrera u WHERE u.idCarrera = ?1"),
+	@NamedQuery(name="Carrera.findDescripcion", query="SELECT u FROM Carrera u WHERE u.descripcion like ?1")
+})
 public class Carrera implements Serializable {
 	private static final long serialVersionUID = 1L;
 

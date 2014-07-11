@@ -82,10 +82,10 @@ public class UsuarioController {
 				}
 			}
 			
-			boolean res = (boolean) usuarioService.insertarMuchos(lstDocente);
-			if(res){
-				
-			}
+			Object res =  usuarioService.insertarMuchos(lstDocente);
+//			if(res){
+//				
+//			}
 			
 			
 		} catch (Exception e) {

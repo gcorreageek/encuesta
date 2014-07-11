@@ -17,8 +17,8 @@ public class DominioDAOImpl implements DominioDAO {
 	
 	@PersistenceContext
 	private EntityManager em; 
-	
-	@Override
+//	findIdHijo
+//	//@Override
 	public Dominio insertarOActualizar(Dominio a) {
 		if(a.getIdDominio()==0){
 			em.persist(a);
@@ -29,7 +29,7 @@ public class DominioDAOImpl implements DominioDAO {
 	} 
 
 	@SuppressWarnings("unchecked")
-	@Override
+//	//@Override
 	public List<Dominio> buscarXId(Dominio a) throws Exception {
 		Query q =  em.createNamedQuery("Dominio.findId",Dominio.class);
 		q.setParameter(1, a.getIdDominio()); 
@@ -37,14 +37,26 @@ public class DominioDAOImpl implements DominioDAO {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
+//	//@Override
 	public List<Dominio> buscarXCampo(Dominio a) throws Exception {
 		Query q =  em.createNamedQuery("Dominio.findCampo",Dominio.class);
 		q.setParameter(1, a.getCampo()); 
         return q.getResultList();
 	}
 
-//	@Override
+//	//@Override
+	public List<Dominio> buscarXIdHijo(Dominio a) throws Exception {
+		Query q =  em.createNamedQuery("Dominio.findIdHijo",Dominio.class);
+		q.setParameter(1, a.getDominio1().getIdDominio()); 
+//		List<Dominio> l = q.getResultList();
+//		log.debug("tam:"+l.size());
+//		for (Dominio x : l) {
+//			log.debug("d:"+x.getIdDominio()+"|"+x.getCampo()+"|"+x.getValor());
+//		}
+        return   q.getResultList();
+	}
+
+//	//@Override
 //	public List<Dominio> buscarXUserName(Dominio a) throws Exception {
 //		Query q =  em.createNamedQuery("Dominio.findDominio",Dominio.class);
 //		q.setParameter(1, a.getUserName()); 

@@ -15,6 +15,7 @@ import java.util.List;
 @NamedQuery(name="Dominio.findAll", query="SELECT d FROM Dominio d")
 @NamedQueries({  
 	@NamedQuery(name="Dominio.findId", query="SELECT u FROM Dominio u WHERE u.idDominio = ?1 "),
+	@NamedQuery(name="Dominio.findIdHijo", query="SELECT u FROM Dominio u WHERE u.dominio1.idDominio = ?1 "),
 	@NamedQuery(name="Dominio.findCampo", query="SELECT u FROM Dominio u WHERE u.campo like ?1 ")
 })
 public class Dominio implements Serializable {
@@ -116,6 +117,8 @@ public class Dominio implements Serializable {
 	}
 
 	public Dominio getDominio1() {
+		if(this.dominio1==null)
+			this.dominio1= new Dominio();
 		return this.dominio1;
 	}
 

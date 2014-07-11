@@ -87,7 +87,7 @@ public class InicioController {
 					log.info("El Usuario y la Contrasena OK!");
 					Cargo cargo =uHere.getCargoDelUsuario(); 
 					log.debug("cargo:"+cargo.getCargo());
-					List<Acceso> accesos =cargo.getAccesos();
+					List<Acceso> accesos =usuarioService.listarAccesosXIdCargo(cargo);
 					log.debug("cargo:"+accesos.isEmpty());
 					for (Acceso acc : accesos) {
 						log.debug("menus:"+acc.getMenu().getNomMenu());

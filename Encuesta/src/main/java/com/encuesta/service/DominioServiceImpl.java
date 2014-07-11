@@ -17,19 +17,19 @@ public class DominioServiceImpl implements DominioService {
 	@Autowired
     DominioDAO dao; 
 	
-	@Override
+	//@Override
 	@Transactional
 	public Dominio insertar(Dominio a) throws Exception {
 		return dao.insertarOActualizar(a);
 	}
 
-	@Override
+	//@Override
 	@Transactional
 	public Dominio actualiza(Dominio a) throws Exception {
 		return dao.insertarOActualizar(a);
 	}
 	
-	@Override
+	//@Override
 	@Transactional
 	public Dominio desabilitarOHabilitar(Dominio a) throws Exception { 
 		List<Dominio> l=buscarXIdDominio(a);
@@ -42,19 +42,19 @@ public class DominioServiceImpl implements DominioService {
 		return dao.insertarOActualizar(a);
 	}
 
-	@Override
+	//@Override
 	public List<Dominio> listar() throws Exception {
 		Dominio a = new Dominio();
 		a.setCampo("%");
 		return dao.buscarXCampo(a);
 	}
 
-	@Override
+	//@Override
 	public List<Dominio> buscarXIdDominio(Dominio a) throws Exception {
 		return dao.buscarXId(a);
 	}
 
-	@Override
+	//@Override
 	public List<Dominio> buscarXCampo(Dominio a) throws Exception {
 		log.debug(""+a.getCampo());
 		if(a.getCampo()==null){
@@ -64,6 +64,49 @@ public class DominioServiceImpl implements DominioService {
 		log.debug("=>"+a.getCampo());
 		return dao.buscarXCampo(a);
 	}
+
+	//@Override
+	public List<Dominio> listarModalidad() throws Exception {
+		Dominio d =  new Dominio();
+		d.getDominio1().setIdDominio(4); 
+		return dao.buscarXIdHijo(d);
+	}
+
+	//@Override
+	public List<Dominio> listarAnio() throws Exception {
+		Dominio d =  new Dominio();
+		d.getDominio1().setIdDominio(8); 
+		return dao.buscarXIdHijo(d);
+	}
+
+	//@Override
+	public List<Dominio> listarNumero() throws Exception {
+		Dominio d =  new Dominio();
+		d.getDominio1().setIdDominio(17); 
+		return dao.buscarXIdHijo(d);
+	}
+
+	//@Override
+	public List<Dominio> listarCiclo() throws Exception {
+		Dominio d =  new Dominio();
+		d.getDominio1().setIdDominio(23); 
+		return dao.buscarXIdHijo(d);
+	}
+
+	//@Override
+	public List<Dominio> listarSeccion() throws Exception {
+		Dominio d =  new Dominio();
+		d.getDominio1().setIdDominio(33); 
+		return dao.buscarXIdHijo(d);
+	}
+
+//	//@Override
+//	public List<Dominio> listarModalidad() throws Exception {
+//		Dominio d =  new Dominio();
+//		d.getDominio1().setIdDominio(4); 
+//		return dao.buscarXIdHijo(d);
+//	}
+ 
 
 	
 

@@ -1,7 +1,9 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.List;
 
 
@@ -12,6 +14,10 @@ import java.util.List;
 @Entity
 @Table(name="alternativas")
 @NamedQuery(name="Alternativa.findAll", query="SELECT a FROM Alternativa a")
+@NamedQueries({  
+	@NamedQuery(name="Alternativa.findId", query="SELECT u FROM Alternativa u WHERE u.idAlternativas = ?1 "),
+	@NamedQuery(name="Alternativa.findIdPregunta", query="SELECT u FROM Alternativa u WHERE u.pregunta.idPregunta = ?1   ")
+})
 public class Alternativa implements Serializable {
 	private static final long serialVersionUID = 1L;
 

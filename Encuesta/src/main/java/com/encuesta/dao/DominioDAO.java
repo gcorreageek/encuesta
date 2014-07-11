@@ -8,5 +8,6 @@ public interface DominioDAO {
 
 	Dominio insertarOActualizar(Dominio a);    
 	List<Dominio> buscarXId(Dominio a)throws Exception; 
-	List<Dominio> buscarXCampo(Dominio a)throws Exception; 
+	List<Dominio> buscarXCampo(Dominio a)throws Exception;
+	List<Dominio> buscarXIdHijo(Dominio a)throws Exception; 
 }

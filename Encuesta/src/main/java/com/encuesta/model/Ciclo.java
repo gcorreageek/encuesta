@@ -1,7 +1,9 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.Date;
 import java.util.List;
 
@@ -12,6 +14,10 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Ciclo.findAll", query="SELECT c FROM Ciclo c")
+@NamedQueries({  
+	@NamedQuery(name="Ciclo.findId", query="SELECT u FROM Ciclo u WHERE u.idCiclo = ?1"),
+	@NamedQuery(name="Ciclo.findVarios", query="SELECT u FROM Ciclo u WHERE u.modalidadD = ?1 and u.annioD = ?2 and u.numeroD = ?3 ")
+})
 public class Ciclo implements Serializable {
 	private static final long serialVersionUID = 1L;
 

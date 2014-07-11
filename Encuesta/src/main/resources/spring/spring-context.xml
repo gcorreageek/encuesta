@@ -39,8 +39,10 @@
 	<bean id="myEntityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
 		<property name="dataSource" ref="jdbcTemplate1" />
 		<property name="jpaVendorAdapter">
+<!-- 		<bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" -->
+<!--              p:database="${jpa.database}" p:showSql="${jpa.showSql}"  />  -->
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
-             p:database="${jpa.database}" p:showSql="${jpa.showSql}"  /> 
+             p:database="${jpa.database}"    /> 
         </property>   
         <property name="persistenceUnitName" value="Encuesta"/> 
 	</bean>  

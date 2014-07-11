@@ -24,8 +24,8 @@ public class Cargo implements Serializable {
 	private String cargo;
 
 	//bi-directional many-to-one association to Acceso
-	@OneToMany(mappedBy="cargo",fetch = FetchType.EAGER )
-	private List<Acceso> accesos = new ArrayList<Acceso>();
+	@OneToMany(mappedBy="cargo")
+	private List<Acceso> accesos;
 
 	//bi-directional many-to-one association to Usuario
 	@OneToMany(mappedBy="cargoDelUsuario")
@@ -51,6 +51,9 @@ public class Cargo implements Serializable {
 	}
 
 	public List<Acceso> getAccesos() {
+//		if(this.accesos==null){
+//			this.accesos = new ArrayList<Acceso>();
+//		}
 		return this.accesos;
 	}
 

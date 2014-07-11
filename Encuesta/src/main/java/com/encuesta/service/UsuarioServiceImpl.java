@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.encuesta.dao.UsuarioDAO;
+import com.encuesta.model.Acceso;
+import com.encuesta.model.Cargo;
+import com.encuesta.model.EncuestaAlumno;
 import com.encuesta.model.Usuario;
 @Service
 public class UsuarioServiceImpl implements UsuarioService {
@@ -17,37 +20,37 @@ public class UsuarioServiceImpl implements UsuarioService {
 	@Autowired
     UsuarioDAO dao; 
 	
-	@Override
+	//@Override
 	@Transactional
 	public Usuario insertar(Usuario a) throws Exception {
 		return dao.insertarOActualizar(a);
 	}
 
-	@Override
+	//@Override
 	@Transactional
 	public Usuario actualiza(Usuario a) throws Exception {
 		return dao.insertarOActualizar(a);
 	}
 
-	@Override
+	//@Override
 	public List<Usuario> listar() throws Exception {
 		Usuario a = new Usuario();
 		a.setUserName("");
 		return dao.buscarXUserName(a);
 	}
 
-	@Override
+	//@Override
 	public List<Usuario> buscarXIdUsario(Usuario a) throws Exception {
 		return dao.buscarXId(a);
 	}
 
-	@Override
+	//@Override
 	public List<Usuario> buscarXUserName(Usuario a) throws Exception {
 		return dao.buscarXUserName(a);
 	}
 
 	@Transactional
-	@Override
+	//@Override
 	public Object insertarMuchos(List<Usuario> lstUsuario) {
 		try {
 			for (Usuario usuario : lstUsuario) {
@@ -61,6 +64,15 @@ public class UsuarioServiceImpl implements UsuarioService {
 			log.error("[insertarMuchos]",e);
 			return false;
 		}  
+	}
+
+	public List<Acceso> listarAccesosXIdCargo(Cargo a) throws Exception {
+		return dao.listarAccesoXcargo(a);
+	}
+
+	public List<EncuestaAlumno> listarEncuestaAlumnoXUsuario(Usuario u)
+			throws Exception { 
+		return dao.listarEncuestaAlumnoXUsuario(u);
 	}
 
 }

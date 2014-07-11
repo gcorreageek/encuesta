@@ -1,7 +1,9 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
+
 import java.util.Date;
 
 
@@ -11,6 +13,10 @@ import java.util.Date;
  */
 @Entity
 @NamedQuery(name="Matricula.findAll", query="SELECT m FROM Matricula m")
+@NamedQueries({  
+	@NamedQuery(name="Matricula.findId", query="SELECT u FROM Matricula u WHERE u.idMatricula = ?1 "),
+	@NamedQuery(name="Matricula.findIdAsignacionProfesor", query="SELECT u FROM Matricula u WHERE u.asignacionprofesor.idAsignacionProfesor = ?1   ")
+})
 public class Matricula implements Serializable {
 	private static final long serialVersionUID = 1L;
 
