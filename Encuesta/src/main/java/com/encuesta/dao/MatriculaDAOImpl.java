@@ -79,7 +79,13 @@ public class MatriculaDAOImpl implements MatriculaDAO {
 	public List<AsignacionProfesor> listaProfesorAsignadoXEncuesta(Encuesta eViene)
 			throws Exception {
 		Encuesta e = em.find(Encuesta.class, eViene.getIdEncuesta());
-		return e.getAnio().getAsignacionprofesors();
+		Query q =  em.createNamedQuery("Asignacionprofesor.findIdAnio",AsignacionProfesor.class);
+		q.setParameter(1,e.getAnio().getIdAnio()); 
+		List<AsignacionProfesor> lAsignacionProfesor = q.getResultList();
+		if(lAsignacionProfesor==null || lAsignacionProfesor.isEmpty()){
+			return null;
+		}
+		return  lAsignacionProfesor;
 	}
 //	//@Override
 	public List<Matricula> listaMatriculaXAsignacion(AsignacionProfesor e)

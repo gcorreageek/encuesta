@@ -102,6 +102,7 @@ public class MatriculaServiceImpl implements MatriculaService {
 	//@Override
 	public List<AsignacionProfesor> listarProfesoresAsignados(String idEncuesta)
 			throws Exception {
+		log.debug("id:"+Integer.parseInt(idEncuesta));
 		Encuesta e = new Encuesta();
 		e.setIdEncuesta(Integer.parseInt(idEncuesta));
 		return dao.listaProfesorAsignadoXEncuesta(e);
