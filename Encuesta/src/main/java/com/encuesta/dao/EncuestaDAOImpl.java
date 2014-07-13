@@ -140,6 +140,59 @@ public class EncuestaDAOImpl implements EncuestaDAO {
 		return alternativa;
 	}
 
+	public List<NumeroEncuesta> listaNumeroEncuesta(NumeroEncuesta ne) {
+		Query q =  em.createNamedQuery("Numeroencuesta.findNumeroReferente",NumeroEncuesta.class);
+		q.setParameter(1, ne.getNumeroReferente());  
+		List<NumeroEncuesta> lNumeroEncuesta = q.getResultList();
+		if(lNumeroEncuesta==null || lNumeroEncuesta.isEmpty()){
+			return null;
+		}else{
+			return  lNumeroEncuesta;
+		}
+	}
+
+	public NumeroEncuesta getNumeroEncuestaXid(NumeroEncuesta ne) {
+		NumeroEncuesta ne2 = em.find(NumeroEncuesta.class, ne.getIdNumeroEncuesta());
+		return ne2;
+	}
+
+	public List<EncuestaProfesor> listarEncuestaProfesor(EncuestaProfesor ep) {
+		Query q =  em.createNamedQuery("Encuestaprofesor.findIdProfesor",EncuestaProfesor.class);
+		q.setParameter(1, ep.getUsuario().getIdUsuario());  
+		List<EncuestaProfesor> lEncuestaProfesor = q.getResultList();
+		if(lEncuestaProfesor==null || lEncuestaProfesor.isEmpty()){
+			return null;
+		}else{
+			return  lEncuestaProfesor;
+		}
+	}
+
+	public EncuestaProfesor getEncuestaProfesorXId(EncuestaProfesor ep) {
+		return em.find(EncuestaProfesor.class, ep.getIdEncuestaProfesor());
+	}
+
+	public List<EncuestaAlumno> listarEncuestaAlumno(EncuestaProfesor ep) {
+		Query q =  em.createNamedQuery("Encuestaalumno.findIdEncuestaProfesor",EncuestaAlumno.class);
+		q.setParameter(1, ep.getIdEncuestaProfesor());  
+		List<EncuestaAlumno> EncuestaAlumno = q.getResultList();
+		if(EncuestaAlumno==null || EncuestaAlumno.isEmpty()){
+			return null;
+		}else{
+			return  EncuestaAlumno;
+		}
+	}
+//	Marcada.findIdEncuestaAlumno
+	public List<Marcada> listarMarcadasXEncuestaAlumno(EncuestaAlumno ea) {
+		Query q =  em.createNamedQuery("Marcada.findIdEncuestaAlumno",Marcada.class);
+		q.setParameter(1, ea.getIdEncuestaAlumno());  
+		List<Marcada> lMarcada = q.getResultList();
+		if(lMarcada==null || lMarcada.isEmpty()){
+			return null;
+		}else{
+			return  lMarcada;
+		}
+	}
+
 	
 	
 }

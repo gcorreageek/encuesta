@@ -13,6 +13,7 @@
   <div class="cl-mcont">   
 	<div class="row dash-cols">
 		<div class="col-sm-12 col-md-12">
+			<span style="color: red" >${mensaje_error}</span>
  			<form action="${pageContext.request.contextPath}/encuesta/encuesta_fin.html" method="post"  >
  			<input type="hidden"  name="idEncuestaAlumno"  value="${idEncuestaAlumno}" >
  			<div id="divPreguntas"  >
@@ -25,7 +26,7 @@
 						<div class="content overflow-hidden">
 							<ul class="list-unstyled">
 							<c:forEach var="y" items="${x.alternativas}" >
-								<li><input type="radio"  name="${x.idPregunta}" value="${y.idAlternativas}"  />   ${y.orden}) ${y.alternativa} (${y.tipoAlternativaD==1?"F":"V"})</li> 
+								<li><input type="radio"  name="${x.idPregunta}" value="${y.idAlternativas}"  />   ${y.orden}) ${y.alternativa} </li> 
 							</c:forEach>
 							</ul>							
 						</div>

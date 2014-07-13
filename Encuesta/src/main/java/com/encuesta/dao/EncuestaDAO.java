@@ -24,11 +24,15 @@ public interface EncuestaDAO {
 	Alternativa registrarAlternativa(Alternativa a);
 	
 	NumeroEncuesta getNumeroEncuestaXidEncuesta(Integer idEncuesta);
+	NumeroEncuesta getNumeroEncuestaXid(NumeroEncuesta ne);
+	
+	List<NumeroEncuesta> listaNumeroEncuesta(NumeroEncuesta ne);
 	
 	EncuestaProfesor registrarEncuestaProfesor(EncuestaProfesor ep);
 	Encuesta getEncuesta(Encuesta e);
 	
 	EncuestaProfesor getEncuestaProfesor(EncuestaProfesor ep);
+	EncuestaProfesor getEncuestaProfesorXId(EncuestaProfesor ep);
 	
 	EncuestaAlumno registrarEncuestaAlumno(EncuestaAlumno ea);
 	
@@ -41,5 +45,10 @@ public interface EncuestaDAO {
 	Marcada registrarMarcadas(Marcada m);
 	
 	Alternativa getAlternativa(Alternativa a);
-	 
+	
+	List<EncuestaProfesor> listarEncuestaProfesor(EncuestaProfesor ep);
+	
+	List<EncuestaAlumno> listarEncuestaAlumno(EncuestaProfesor ep);
+	List<Marcada> listarMarcadasXEncuestaAlumno(EncuestaAlumno ea);
+
 }

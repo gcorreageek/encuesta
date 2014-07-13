@@ -17,11 +17,12 @@
 			<div class="content">
 	            <div class="form-horizontal group-border-dashed"   style="border-radius: 0px;">
 	            <form action="${pageContext.request.contextPath}/encuesta/profesorasiggnar_guardar.html" method="post"  >
+	              <span style="color: red" >${mensaje_error}</span>
 	              <div class="form-group">
 	                <label class="col-sm-3 control-label">Encuesta</label>
 	                <div class="col-sm-6" id="divCboModalidad"  >
 	                  <select class="form-control"  id="cboEncuesta"  name="cboEncuesta" >
-	                    <option value="0">Seleccionar</option> 
+<!-- 	                    <option value="0">Seleccionar</option>  -->
 	                    <c:forEach   var="x" items="${lEncuesta}"  >
 	                    	<option value="${x.idEncuesta}">${x.nombreReferente}</option> 	
 	                    </c:forEach>

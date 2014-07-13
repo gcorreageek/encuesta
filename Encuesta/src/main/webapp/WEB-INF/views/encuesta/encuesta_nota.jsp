@@ -16,42 +16,32 @@
 		<div class="block-flat"> 
 			<div class="content">
 	            <div class="form-horizontal group-border-dashed"   style="border-radius: 0px;">
-	            <c:if test="${totalEncuestaAlumno==0}">
-	            <h2>El Alumno no tiene encuestas pendientes</h2>
+	            <c:if test="${totalEncuestaProfesor==0}">
+	            <h2>El Profesor no tiene encuestas asignadas</h2>
 	            <p>Gracias por usar el sistema de encuestas.</p>
 	            </c:if> 
-	            <c:if test="${totalEncuestaAlumno>0}">
-	             <form action="${pageContext.request.contextPath}/encuesta/encuesta_inicio.html" method="post"  >
+	            <c:if test="${totalEncuestaProfesor>0}"> 
 	              <div class="form-group"> 
 	                <label class="col-sm-3 control-label">Encuesta</label>
 	                <div class="col-sm-6" id="divCboModalidad"  >
-	                  <select class="form-control"  id="cboEncuestaAlumno"  name="cboEncuestaAlumno" >
-<!-- 	                    <option value="0">Seleccionar</option>  -->
-	                    <c:forEach   var="x" items="${lEncuestaAlumno}"  >
-	                    	<option value="${x.idEncuestaAlumno}">
-	                    	${x.encuestaprofesor.usuario.apellidoPaterno} ${x.encuestaprofesor.usuario.apellidoMaterno} ${x.encuestaprofesor.usuario.nombre}
-	                    	- ${x.encuestaprofesor.encuesta.anio.curso.curso}
+	                  <select class="form-control"  id="cboEncuestaProfesor"  name="cboEncuestaProfesor" >
+	                    <c:forEach   var="x" items="${lEncuestaProfesor}"  >
+	                    	<option value="${x.idEncuestaProfesor}">
+	                    	${x.encuesta.nombreReferente} - ${x.encuesta.anio.curso.curso}
 	                    	</option> 	
 	                    </c:forEach>
 	                  </select>									
 	                </div>
-	              </div> 
-	              <div class="form-group" style="text-align: center" >
-	              <div class="col-sm-12 col-md-12" style="text-align: center" >
-	                <button type="submit" class="btn btn-primary">Siguiente</button> 
-	              </div>
-	              </div> 
-	              </form>
+	              </div>  
+	              <input  type="button"  id="btnGetNota" value="Nota"  >
+	              
 	            </c:if> 
 	                 
 	            </div> 
 	          </div>
  			</div>   
- 			<div id="divPreguntas"  >
-			</div> 
-	               
-	                
-	                
+ 			<div id="divNota"  >
+			</div>  
 		</div>	
 	</div> 
   </div>
@@ -62,9 +52,15 @@
 <!-- Script --> 
 <script type="text/javascript"> 
 $(document).ready(function() {
- 
-
-	
+ $('#btnGetNota').click(function(){
+	 var cboEncuestaProfesor = $('#cboEncuestaProfesor').val();
+	 $.post("${pageContext.request.contextPath}/encuesta/encuesta_nota_mostrar.html",{
+			"cboEncuestaProfesor":cboEncuestaProfesor
+		},function(data){
+		 	$("#divNota").html(data);
+		}); 
+	 
+ });
 });
 </script>
 

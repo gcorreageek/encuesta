@@ -1,6 +1,7 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
+
 import javax.persistence.*;
 
 
@@ -11,6 +12,10 @@ import javax.persistence.*;
 @Entity
 @Table(name="marcadas")
 @NamedQuery(name="Marcada.findAll", query="SELECT m FROM Marcada m")
+@NamedQueries({  
+	@NamedQuery(name="Marcada.findId", query="SELECT u FROM Marcada u WHERE u.idMarcadas = ?1 "),
+	@NamedQuery(name="Marcada.findIdEncuestaAlumno", query="SELECT u FROM Marcada u WHERE u.encuestaalumno.idEncuestaAlumno = ?1   ")
+})
 public class Marcada implements Serializable {
 	private static final long serialVersionUID = 1L;
 

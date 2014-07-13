@@ -1,9 +1,21 @@
 package com.encuesta.controller;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+//import javax.el.*;
 
+
+
+
+import javax.el.ELProcessor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -18,6 +30,8 @@ import com.encuesta.model.Alternativa;
 import com.encuesta.model.Dominio;
 import com.encuesta.model.Encuesta;
 import com.encuesta.model.EncuestaAlumno;
+import com.encuesta.model.EncuestaProfesor;
+import com.encuesta.model.Marcada;
 import com.encuesta.model.NumeroEncuesta;
 import com.encuesta.model.Pregunta;
 import com.encuesta.model.Usuario;
@@ -25,6 +39,7 @@ import com.encuesta.service.DominioService;
 import com.encuesta.service.EncuestaService;
 import com.encuesta.service.MatriculaService;
 import com.encuesta.service.UsuarioService;
+import com.encuesta.util.Utiles;
 @RequestMapping("/encuesta")
 @Controller
 public class EncuestaController {
@@ -44,6 +59,15 @@ public class EncuestaController {
 	@RequestMapping("/ir.html")
 	public String ir(HttpServletRequest request,Model m){ 
 		return "/encuesta/encuesta_registrar";
+	}
+	@RequestMapping("/encuesta_registrar2.html")
+	public String encuestaRegistrar2(HttpServletRequest request,Model m){ 
+		List<NumeroEncuesta> lNumeroEncuesta = encuestaService.listarNumeroEncuesta();
+		for (NumeroEncuesta ne : lNumeroEncuesta) {
+			log.debug("ne:"+ne.getIdNumeroEncuesta());
+		}
+		request.setAttribute("lNumeroEncuesta", lNumeroEncuesta);
+		return "/encuesta/encuesta_registrar2";
 	}
 //	load_modalidad.html
 	@RequestMapping("/load_modalidad.html")
@@ -130,6 +154,23 @@ public class EncuestaController {
 		}
 		return ir(request,m);
 	}
+	@RequestMapping("/encuesta_registrarGuardar2.html")
+	public String encuestaRegistrarGuardar2(HttpServletRequest request,Model m){ 
+		String[] idAnios =request.getParameterValues("checkAnio");
+		String cboNumeroReferente = request.getParameter("cboNumeroReferente");
+		if(idAnios==null || idAnios.length==0){
+			request.setAttribute("mensaje_error", "Busque un Año academico");
+			return encuestaRegistrar2(request,m);
+		}
+		try {
+			NumeroEncuesta ne = new NumeroEncuesta();
+			ne.setIdNumeroEncuesta(Integer.parseInt(cboNumeroReferente));
+			encuestaService.registrarEncuesta(idAnios, ne); 
+		} catch (Exception e) {
+			log.error("[encuestaRegistrar]",e);
+		}
+		return encuestaRegistrar2(request,m);
+	}
 	
 	@RequestMapping("/pregunta_asignar.html")
 	public String preguntaAsignar(HttpServletRequest request,Model m){ 
@@ -141,6 +182,17 @@ public class EncuestaController {
 		}
 		m.addAttribute("lEncuesta",lEncuesta);
 		return "/encuesta/pregunta_asignar";
+	}
+	@RequestMapping("/pregunta_asignar2.html")
+	public String preguntaAsignar2(HttpServletRequest request,Model m){ 
+//		List<Encuesta> lEncuesta = null;
+//		try {
+//			lEncuesta = encuestaService.listarEncuesta();
+//		} catch (Exception e) {
+//			log.error("[preguntaAsignar]",e);
+//		}
+//		m.addAttribute("lEncuesta",lEncuesta);
+		return "/encuesta/pregunta_asignar2";
 	}
 //	pregunta_agregar.html
 	@SuppressWarnings("unchecked")
@@ -173,7 +225,7 @@ public class EncuestaController {
 			log.debug("Pregunta:"+p1.getOrden()+")"+p1.getPregunta()+"|Puntaje="+p1.getPuntaje());
 			List<Alternativa> lAlternativa = p1.getAlternativas();
 			for (Alternativa a1 : lAlternativa) {
-				log.debug("Alternativa:"+a1.getAlternativa()+"|"+a1.getTipoAlternativaD());
+				log.debug("Alternativa:"+a1.getAlternativa()+"|"+a1.getPuntaje());
 			}
 		}
 		return "/encuesta/pregunta_listar";
@@ -215,6 +267,10 @@ public class EncuestaController {
 	public String preguntaCargarTodo(HttpServletRequest request,Model m){ 
 		return "/encuesta/pregunta_listar";
 	}
+	@RequestMapping("/pregunta_cargarformula.html")
+	public String preguntaCargarFormula(HttpServletRequest request,Model m){ 
+		return "/encuesta/pregunta_formula";
+	}
 	
 //	"cboPregunta":cboPregunta,
 //	"txtAlternativa":txtAlternativa,
@@ -224,13 +280,13 @@ public class EncuestaController {
 	public String alternativaAgregar(HttpServletRequest request,Model m){ 
 		String cboPregunta = request.getParameter("cboPregunta");
 		String txtAlternativa = request.getParameter("txtAlternativa");
-		String cboOpciones = request.getParameter("cboOpciones");
+		String txtPuntajeAlternativa = request.getParameter("txtPuntajeAlternativa");
 		Pregunta p = new Pregunta();
 		p.setOrden(Integer.parseInt(cboPregunta));
 		Alternativa a = new Alternativa();
 		a.setAlternativa(txtAlternativa);
 		a.setPregunta(p);
-		a.setTipoAlternativaD(Integer.parseInt(cboOpciones));
+		a.setPuntaje(Integer.parseInt(txtPuntajeAlternativa));
 		
 		HttpSession session = request.getSession(); 
 		List<Pregunta> lPregunta = (List<Pregunta>) session.getAttribute("session_preguntas");
@@ -246,8 +302,7 @@ public class EncuestaController {
 				}else{
 					int ultimoId =lAlternativa.get(lAlternativa.size()-1).getOrden() ;
 					a.setOrden(ultimoId+1);
-				}
-				
+				}  
 				lAlternativa.add(a);
 				log.debug("Agregas:"+a.getAlternativa());
 				pregunta.setAlternativas(lAlternativa);
@@ -259,7 +314,7 @@ public class EncuestaController {
 			log.debug("Pregunta:"+p1.getOrden()+")"+p1.getPregunta()+"|Puntaje="+p1.getPuntaje());
 			List<Alternativa> lAlternativa = p1.getAlternativas();
 			for (Alternativa a1 : lAlternativa) {
-				log.debug("Alternativa:"+a1.getAlternativa()+"|"+a1.getTipoAlternativaD());
+				log.debug("Alternativa:"+a1.getAlternativa()+"|"+a1.getPuntaje());
 			}
 		} 
 		return "/encuesta/pregunta_listar";
@@ -304,11 +359,61 @@ public class EncuestaController {
 		HttpSession session = request.getSession(); 
 		List<Pregunta> lPreguntaV = (List<Pregunta>) session.getAttribute("session_preguntas");
 		if(lPreguntaV==null || lPreguntaV.isEmpty()){
+			request.setAttribute("mensaje_alert", "Ingresar como minimo una pregunta");
 			return preguntaAsignar(request,m);
 		}
-		encuestaService.registrarPregunta(cboEncuesta, lPreguntaV);
-		session.removeAttribute("session_preguntas");
+		for (Pregunta p : lPreguntaV) {
+			if(!(p.getAlternativas().size()>2)){
+				request.setAttribute("mensaje_alert", "Ingresar como minimo dos alternativas por pregunta");
+				return preguntaAsignar(request,m);
+			} 
+		}
+		if(!log.isDebugEnabled()){
+//			encuestaService.registrarPregunta(cboEncuesta, lPreguntaV);
+			session.removeAttribute("session_preguntas");
+		} 
 		return preguntaAsignar(request,m);
+	}
+	@RequestMapping("/asignacionpreguntas_guardar2.html")
+	public String asignacionPreguntasGuardar2(HttpServletRequest request,Model m){ 
+		String numeroReferente = request.getParameter("numeroReferente");
+		String formula =  request.getParameter("formula");
+		log.debug("numeroReferente:"+numeroReferente);
+		log.debug("formula:"+formula);
+		HttpSession session = request.getSession(); 
+		List<Pregunta> lPreguntaV = (List<Pregunta>) session.getAttribute("session_preguntas");
+		if(lPreguntaV==null || lPreguntaV.isEmpty()){
+			request.setAttribute("mensaje_alert", "Ingresar como minimo una pregunta");
+			return preguntaAsignar2(request,m);
+		}
+		for (Pregunta p : lPreguntaV) {
+			if(!(p.getAlternativas().size()>1)){
+				request.setAttribute("mensaje_alert", "Ingresar como minimo dos alternativas por pregunta");
+				return preguntaAsignar2(request,m);
+			} 
+		}
+		if(numeroReferente==null || numeroReferente.equals("")){
+			request.setAttribute("mensaje_alert", "Ingrese numero Referente Valido");
+			return preguntaAsignar2(request,m);
+		}
+		if(formula==null || formula.equals("") ){
+			request.setAttribute("mensaje_alert", "Ingrese formula valida");
+			return preguntaAsignar2(request,m);
+		}
+		if(log.isDebugEnabled()){
+			log.debug("se borro la session_pregunta");
+			NumeroEncuesta ne = new NumeroEncuesta();
+			ne.setFecha(new Date());
+			ne.setFormula(formula);
+			ne.setNumeroReferente(numeroReferente); 
+			try {
+				encuestaService.registrarNumeroEncuestaAndPreguntasAlternativas(ne, lPreguntaV);
+			} catch (Exception e) { 
+				log.error("[asignacionPreguntasGuardar2]",e);
+			} 
+			session.removeAttribute("session_preguntas");
+		} 
+		return preguntaAsignar2(request,m);
 	}
 	@RequestMapping("/profesor_asignar.html")
 	public String profesorAsignar(HttpServletRequest request,Model m){ 
@@ -329,6 +434,10 @@ public class EncuestaController {
 	public String profesorAsignarGuardar(HttpServletRequest request,Model m){
 		Integer idEncuesta = Integer.parseInt(request.getParameter("cboEncuesta"));
 		String[] profesores = request.getParameterValues("checkProfesor");
+		if(profesores==null || profesores.length==0){
+			request.setAttribute("mensaje_error", "Seleccione un Profesor");
+			return profesorAsignar(request, m);
+		}
 		encuestaService.registrarEncuestaProfesor(idEncuesta, profesores);
 		return profesorAsignar(request, m);
 	}
@@ -348,12 +457,21 @@ public class EncuestaController {
 	@RequestMapping("/alumnoasignar_guardar.html")
 	public String alumnoAsignarGuardar(HttpServletRequest request,Model m){
 		Integer idEncuesta = Integer.parseInt(request.getParameter("cboEncuesta"));
-		
+		String txtNumeroAlumnos = request.getParameter("txtNumeroAlumnos");
+//		txtNumeroAlumnos
 		String[] alumnos = request.getParameterValues("checkAlumno");
-		log.debug("=>"+alumnos.length);
+		if(alumnos==null || alumnos.length==0){
+//			log.debug("=>"+alumnos.length);
+			request.setAttribute("mensaje_error", "Seleccione un Alumno");
+			return alumnoAsignar(request, m);
+		}  
+		if(txtNumeroAlumnos.equals("")){
+			request.setAttribute("mensaje_error", "Ingrese Numero de Alumnos");
+			return alumnoAsignar(request, m);
+		}
 		Integer idProfesor = Integer.parseInt(request.getParameter("cboProfesor"));
 		try {
-			encuestaService.registrarEncuestaAlumno(idProfesor,idEncuesta, alumnos);
+			encuestaService.registrarEncuestaAlumno(idProfesor,idEncuesta, alumnos,txtNumeroAlumnos);
 		} catch (Exception e) { 
 			log.error("[alumnoAsignarGuardar]",e);
 		}
@@ -368,25 +486,14 @@ public class EncuestaController {
 		try {
 			log.debug("Usuario:"+usuSession.getIdUsuario());
 			lEncuestaAlumno = usuarioService.listarEncuestaAlumnoXUsuario(usuSession);
-			request.setAttribute("lEncuestaAlumno", lEncuestaAlumno);
-			
-			for (EncuestaAlumno encuestaAlumno : lEncuestaAlumno) {
-				log.debug("Encuesta:"+
-			encuestaAlumno.getEncuestaprofesor().getUsuario().getApellidoPaterno()+" "+
-			encuestaAlumno.getEncuestaprofesor().getUsuario().getApellidoMaterno()+" "+
-			encuestaAlumno.getEncuestaprofesor().getUsuario().getNombre()+"-"+
-			encuestaAlumno.getEncuestaprofesor().getEncuesta().getAnio().getCurso().getCurso());
-//				NumeroEncuesta ne = encuestaAlumno.getEncuestaprofesor().getEncuesta().getNumeroencuesta();
-//				log.debug("Ne:"+ne.getIdNumeroEncuesta());
-//				List<Pregunta> lPregunta = encuestaService.listarPreguntaXNumeroEncuesta(ne);
-//				for (Pregunta p : lPregunta) {
-//					log.debug("P:"+p.getIdPregunta()+"|"+p.getPregunta());
-//					List<Alternativa> lAlternativa = encuestaService.listarAlternativaXPregunta(p);
-//					for (Alternativa a : lAlternativa) {
-//						log.debug("Alternativas:"+a.getIdAlternativas()+"|"+a.getAlternativa());
-//					}
-//				}
+			log.debug("Usuario:"+usuSession.getIdUsuario()+"|"+lEncuestaAlumno);
+			if(lEncuestaAlumno==null || lEncuestaAlumno.isEmpty()){
+				request.setAttribute("totalEncuestaAlumno", 0);
+				return "/encuesta/encuesta_realizar";
 			}
+			log.debug("tam:"+lEncuestaAlumno.size());
+			request.setAttribute("totalEncuestaAlumno", lEncuestaAlumno.size());
+			request.setAttribute("lEncuestaAlumno", lEncuestaAlumno);
 		} catch (Exception e) { 
 			log.error("[encuestaRealizar]",e);
 		} 
@@ -397,7 +504,13 @@ public class EncuestaController {
 	@RequestMapping("/encuesta_inicio.html")
 	public String encuestaInicio(HttpServletRequest request,Model m){ 
 		String idEncuestaAlumno = request.getParameter("cboEncuestaAlumno");
-		 
+		String idEncuestaAlumno2 = (String) request.getAttribute("cboEncuestaAlumno");
+		log.debug("id1:"+idEncuestaAlumno);
+		log.debug("id2:"+idEncuestaAlumno2);
+		if(idEncuestaAlumno==null){
+			idEncuestaAlumno = idEncuestaAlumno2;
+		}
+		
 		try { 
 			
 			
@@ -433,20 +546,26 @@ public class EncuestaController {
 	public String encuestaFin(HttpServletRequest request,Model m){ 
 		String idEncuestaAlumno = request.getParameter("idEncuestaAlumno");
 		try {  
+			
 			EncuestaAlumno ea = encuestaService.getEncuestaAlumno(idEncuestaAlumno);
-			ea.setFinEncuesta(new Date());
-			ea.setResolvioD(2); 
-			ea = encuestaService.actualizarEncuestaAlumno(ea);
-			 
+			
 			NumeroEncuesta ne = ea.getEncuestaprofesor().getEncuesta().getNumeroencuesta();
 			List<Pregunta> lPregunta = encuestaService.listarPreguntaXNumeroEncuesta(ne);
 			List<String> respuestas = new ArrayList<String>();
 			for (Pregunta p : lPregunta) {
 				String respuesta = request.getParameter(p.getIdPregunta()+"");
-				if(respuesta!=null){
-					respuestas.add(respuesta);
+				if(respuesta==null){
+					request.setAttribute("cboEncuestaAlumno", idEncuestaAlumno);
+					request.setAttribute("mensaje_error", "Es obligatorio responder todo las preguntas");
+					return encuestaInicio(request, m);
 				} 
+				respuestas.add(respuesta);
 			}  
+			
+			ea.setFinEncuesta(new Date());
+			ea.setResolvioD(2); 
+			ea = encuestaService.actualizarEncuestaAlumno(ea);
+			
 			String[] respuestasArreglo = (String[]) respuestas.toArray(new String[]{""});
 			encuestaService.registrarMarcadas(ea, respuestasArreglo);
 			request.setAttribute("ea", ea);
@@ -456,10 +575,174 @@ public class EncuestaController {
 		} 
 		return "/encuesta/encuesta_fin";
 	}
+//	encuesta/encuesta_nota.html
+	@RequestMapping("/encuesta_nota.html")
+	public String encuestaNota(HttpServletRequest request,Model m){ 
+		HttpSession session = request.getSession();
+		Usuario profesor = (Usuario) session.getAttribute("session_usuario");
+		List<EncuestaProfesor> lEncuestaProfesor = encuestaService.listarEncuestasXprofesor(profesor);
+		if(lEncuestaProfesor==null || lEncuestaProfesor.isEmpty()){
+			request.setAttribute("totalEncuestaProfesor", "0");
+			return "/encuesta/encuesta_nota";
+		}
+		request.setAttribute("totalEncuestaProfesor", lEncuestaProfesor.size());
+		request.setAttribute("lEncuestaProfesor", lEncuestaProfesor);
+		for (EncuestaProfesor ep : lEncuestaProfesor) {
+//			ep.getEncuesta().getAnio().getCurso().getCurso()
+			log.debug("ep:"+ep.getIdEncuestaProfesor()+"|"+ep.getEncuesta().getNombreReferente());
+		}
+		return "/encuesta/encuesta_nota";
+	}
+//	encuesta_nota_mostrar
+	@RequestMapping("/encuesta_nota_mostrar.html")
+	public String encuestaNotaMostrar(HttpServletRequest request,Model m){ 
+		String idEncuestaProfesor = request.getParameter("cboEncuestaProfesor");
+		
+		
+		EncuestaProfesor ep =  encuestaService.getEncuestaProfesor(Integer.parseInt(idEncuestaProfesor));
+		
+		String formula = ep.getEncuesta().getNumeroencuesta().getFormula();
+		NumeroEncuesta ne = ep.getEncuesta().getNumeroencuesta();
+		List<Pregunta> lPreguntas = encuestaService.listarPreguntaXNumeroEncuesta(ne);
+		Map<String, Integer> mapVariablePuntaje = new HashMap<String, Integer>();
+		int nPregunta=1; 
+		for (Pregunta p : lPreguntas) { 
+			Integer puntajePregunta = p.getPuntaje();
+			mapVariablePuntaje.put("P"+nPregunta, puntajePregunta);
+			List<Alternativa> lAlternativas = encuestaService.listarAlternativaXPregunta(p);
+			int nAlternativa=1;
+			for (Alternativa a : lAlternativas) {
+				Integer puntajeAlternativa = a.getPuntaje(); 
+				mapVariablePuntaje.put("P"+nPregunta+"_"+nAlternativa, puntajeAlternativa);
+				nAlternativa++;
+			}
+			nPregunta++;
+		}
+		Set<Entry<String, Integer>> s = mapVariablePuntaje.entrySet();
+		Iterator<Entry<String, Integer>> i = s.iterator();
+		String formulaReemplazada = formula;
+		while (i.hasNext()) {
+			Entry<String, Integer> e = i.next();
+			String k = e.getKey();
+			Integer v = e.getValue();
+			log.debug("Entry:"+k+"="+v);
+			formulaReemplazada = formulaReemplazada.replaceAll(k, v+"");
+		}
+		log.debug("Formula de la Nota perfecta:"+formulaReemplazada);
+		
+		double puntajeMaximo = Double.parseDouble(Utiles.getResultado(formulaReemplazada));
+		log.debug("Nota perfecta:"+puntajeMaximo);
+		
+//		Map<String, Integer> mapVariablePuntaje2 = new HashMap<String, Integer>();
+		
+		List<EncuestaAlumno> lEncuestaAlumno = encuestaService.listarEncuestasAlumnoXIdEncuestaProfesor(ep);
+		Integer tamMinimoDeAlumno = Integer.parseInt(lEncuestaAlumno.get(0).getNumeroAlumnosValidos());
+		
+		double sumaNotas = 0;
+		double totalAlumnos = lEncuestaAlumno.size();
+		for (EncuestaAlumno ea : lEncuestaAlumno) {
+			Usuario alumno = ea.getUsuario();
+			
+			List<Marcada> lMarcadas = encuestaService.listarMarcadasXEncuestaAlumno(ea);
+			int nPregunta2=1; 
+			Boolean val  = true;
+			for (Pregunta p2 : lPreguntas) { 
+				Integer puntajePregunta2 = p2.getPuntaje();
+				mapVariablePuntaje.put("P"+nPregunta2, puntajePregunta2);
+				List<Alternativa> lAlternativas2 = encuestaService.listarAlternativaXPregunta(p2);
+				int nAlternativa2=1;
+				for (Alternativa a2 : lAlternativas2) {
+					val=true;
+					for (Marcada marcada : lMarcadas) {
+						if(marcada.getAlternativa().getIdAlternativas()==a2.getIdAlternativas()){
+							Integer puntajeAlternativa2 = a2.getPuntaje(); 
+							mapVariablePuntaje.put("P"+nPregunta2+"_"+nAlternativa2, puntajeAlternativa2);
+							nAlternativa2++;
+							val= false;
+							break;
+						} 
+					}
+					if(val){
+						Integer puntajeAlternativa2 = 0; 
+						mapVariablePuntaje.put("P"+nPregunta2+"_"+nAlternativa2, puntajeAlternativa2);
+						nAlternativa2++;	
+					} 
+				}
+				nPregunta2++;
+			} 
+			
+			log.debug("Usuario:"+alumno.getIdUsuario());
+			log.debug("Variables Reemplazadas:"+mapVariablePuntaje.toString()); 
+			Iterator<Entry<String, Integer>> i2 = mapVariablePuntaje.entrySet().iterator();
+			String formulaReemplazada2 = formula;
+			while (i2.hasNext()) {
+				Entry<String, Integer> e = i2.next();
+				String k = e.getKey();
+				Integer v = e.getValue();
+				log.debug("Entry:"+k+"="+v);
+				formulaReemplazada2 = formulaReemplazada2.replaceAll(k, v+"");
+			}
+			log.debug("Formula de la Nota perfecta:"+formulaReemplazada2);
+			
+			double puntajeAlumno = Double.parseDouble(Utiles.getResultado(formulaReemplazada2));
+			log.debug("Nota alumno:"+puntajeAlumno);
+			double notaAlumno = (puntajeAlumno*20)/puntajeMaximo;
+			sumaNotas = sumaNotas+notaAlumno;
+			
+		}  
+		BigDecimal d1 = new BigDecimal(sumaNotas); 
+		BigDecimal d2 = new BigDecimal(totalAlumnos);
+		BigDecimal dR = d1.divide(d2);
+		log.debug("Es valido:"+dR);
+		Double notaPromedioXcurso = sumaNotas/totalAlumnos;
+		boolean promedioValido = tamMinimoDeAlumno<=totalAlumnos;
+//		log.debug("Es valido:"+notaPromedioXcurso+", es:"+notaPromedioXcurso);
+//		BigDecimal notaPromedioXcursoBD = new BigDecimal(notaPromedioXcurso);
+		
+		request.setAttribute("promedioValido", promedioValido);
+		request.setAttribute("notaPromedioXcurso", dR);
+		
+		
+		return "/encuesta/encuesta_notaresultado";
+	}
 	
-	
-	
-	
-	
+	public static void main(String[] args) {
+ 
+		ELProcessor elp = new ELProcessor();
+		String campoDB="((((((98*63*22)/1000)+((98*63*14)/1000)-((35*15*16)/1000))))*2)";
+		Object ret = elp.eval(campoDB);
+		System.out.println(ret+"");
+		
+		Map<String, Integer> map = new HashMap<String, Integer>();
+		map.put("P1", 10);
+		map.put("P1_1", 100);
+		map.put("P1_2", 0);
+		
+		map.put("P2", 20);
+		map.put("P2_1", 50);
+		map.put("P2_2", 10); 
+ 
+		System.out.println(map.toString());
+//		map2 = map;
+		Map<String, Integer> map2 = new HashMap<String, Integer>();
+		
+		map2.put("P1", 8880);
+		System.out.println(map2.toString());
+		 
+		System.out.println(map.toString()); 
+		
+		
+		
+		
+//		for (int j = 1; j < 5; j++) {//pregunta
+//			map2.put("P"+j, 1);
+			for (int j2 = 1; j2 < 3; j2++) {//alternativa
+				
+				for (int k = 1; k < 5 ; k++) {//marcada
+					
+				}
+			}
+//		}
+	}
 	
 }

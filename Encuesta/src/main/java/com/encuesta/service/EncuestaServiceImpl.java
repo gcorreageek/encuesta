@@ -121,7 +121,7 @@ public class EncuestaServiceImpl implements EncuestaService {
 
 	@Transactional
 	public void registrarEncuestaAlumno(Integer idProfesor, Integer idEncuesta,
-			String[] alumnos) throws Exception {
+			String[] alumnos,String txtNumeroAlumnos) throws Exception {
 		Encuesta e = new Encuesta();
 		e.setIdEncuesta(idEncuesta);
 		e = dao.getEncuesta(e);
@@ -144,6 +144,7 @@ public class EncuestaServiceImpl implements EncuestaService {
 			EncuestaAlumno ea = new EncuestaAlumno();
 			ea.setUsuario(usuario);
 			ea.setEncuestaprofesor(ep);
+			ea.setNumeroAlumnosValidos(txtNumeroAlumnos);
 			dao.registrarEncuestaAlumno(ea);
 		}
 		
@@ -184,6 +185,83 @@ public class EncuestaServiceImpl implements EncuestaService {
 			log.debug("id2:"+m.getEncuestaalumno().getIdEncuestaAlumno());
 			dao.registrarMarcadas(m);
 		} 
+	}
+
+	@Transactional
+	public NumeroEncuesta registrarNumeroEncuestaAndPreguntasAlternativas(
+			NumeroEncuesta ne, List<Pregunta> lPregunta) throws Exception {
+		ne = dao.registrarNumeroEncuesta(ne);
+		int orden=1;
+		for (Pregunta p : lPregunta) {
+			p.setOrden(orden);
+			p.setNumeroencuesta(ne);
+			p =dao.registrarPregunta(p);
+			List<Alternativa> lAlternativa = p.getAlternativas();
+			int ordenAlt = 1;
+			for (Alternativa a : lAlternativa) {
+				a.setOrden(ordenAlt);
+				a.setPregunta(p);
+				a = dao.registrarAlternativa(a);
+				ordenAlt++;
+			} 
+			orden++;
+		} 
+		return ne;
+	}
+
+	public List<NumeroEncuesta> listarNumeroEncuesta() {
+		NumeroEncuesta ne = new NumeroEncuesta();
+		ne.setNumeroReferente("%");
+		return dao.listaNumeroEncuesta(ne);
+	}
+
+	@Transactional
+	public Encuesta registrarEncuesta(String[] anios, NumeroEncuesta ne)
+			throws Exception {
+		for (String s : anios) {
+			Anio a = matriculaService.getAnioXidAnio(Integer.parseInt(s));
+			TipoEncuesta te = new TipoEncuesta();
+			Ciclo ciclo = new Ciclo();
+			ciclo.setIdCiclo(a.getCiclo().getIdCiclo());
+			te.setCiclo(ciclo);
+			te.setHabilitado(EstadosHabilitacion.HABILITADO.toString());
+			te.setEncuesta(ciclo.getNombre());
+			registrarTipoEncuesta(te); 
+			 
+			Encuesta e = new Encuesta();
+			log.debug("tipo iD:"+te.getIdTipoEncuesta());
+			e.setTipoencuesta(te);
+			log.debug("Anio iD:"+a.getIdAnio());
+			e.setAnio(a);
+			log.debug("numero id:"+ne.getIdNumeroEncuesta());
+			
+			NumeroEncuesta ne2 = dao.getNumeroEncuestaXid(ne);
+			e.setNumeroencuesta(ne2); 
+			e.setNombreReferente(ne2.getNumeroReferente());
+			registrarEncuesta(e);
+		} 
+		return null;
+	}
+
+	public List<EncuestaProfesor> listarEncuestasXprofesor(Usuario profesor) {
+		EncuestaProfesor ep = new EncuestaProfesor();
+		ep.setUsuario(profesor);
+		return dao.listarEncuestaProfesor(ep);
+	}
+
+	public EncuestaProfesor getEncuestaProfesor(Integer idEncuestaProfesor) {
+		EncuestaProfesor ep = new EncuestaProfesor();
+		ep.setIdEncuestaProfesor(idEncuestaProfesor);
+		return dao.getEncuestaProfesorXId(ep);
+	}
+
+	public List<EncuestaAlumno> listarEncuestasAlumnoXIdEncuestaProfesor(
+			EncuestaProfesor Eprofesor) { 
+		return dao.listarEncuestaAlumno(Eprofesor);
+	}
+
+	public List<Marcada> listarMarcadasXEncuestaAlumno(EncuestaAlumno ea) {
+		return dao.listarMarcadasXEncuestaAlumno(ea);
 	}
  
 

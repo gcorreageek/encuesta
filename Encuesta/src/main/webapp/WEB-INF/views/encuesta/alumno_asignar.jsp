@@ -17,11 +17,12 @@
 			<div class="content">
 	            <div class="form-horizontal group-border-dashed"   style="border-radius: 0px;">
 	            <form action="${pageContext.request.contextPath}/encuesta/alumnoasignar_guardar.html" method="post"  >
+	              <span style="color: red" >${mensaje_error}</span>
 	              <div class="form-group">
 	                <label class="col-sm-3 control-label">Encuesta</label>
 	                <div class="col-sm-6" id="divCboModalidad"  >
 	                  <select class="form-control"  id="cboEncuesta"  name="cboEncuesta" >
-	                    <option value="0">Seleccionar</option> 
+<!-- 	                    <option value="0">Seleccionar</option>  -->
 	                    <c:forEach   var="x" items="${lEncuesta}"  >
 	                    	<option value="${x.idEncuesta}">${x.nombreReferente}</option> 	
 	                    </c:forEach>
@@ -32,8 +33,13 @@
 	                <label class="col-sm-3 control-label">Profesor</label>
 	                <div class="col-sm-6" id="divCboProfesor"  >
 	                  <select class="form-control"  id="cboProfesor1"  name="cboProfesor" >
-	                    <option value="0">Seleccionar</option>  
 	                  </select>									
+	                </div>
+	              </div>
+	              <div class="form-group">
+	                <label class="col-sm-3 control-label">N°Alumnos validos</label>
+	                <div class="col-sm-6" id="divtxtNumeroAlumnos"  >
+	                   	<input class="form-control"   type="text" name="txtNumeroAlumnos" id="txtNumeroAlumnos"  >							
 	                </div>
 	              </div>
 	              <div class="form-group" style="text-align: center" >

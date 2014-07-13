@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import javax.el.ELProcessor;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -49,6 +51,12 @@ public class Utiles {
 		      System.out.println("Error al obtener el formato de la fecha/hora: " + ex.getMessage());
 		} 
 		return fecFormatoDate;
+	}
+	public static String getResultado(String formula){
+		ELProcessor elp = new ELProcessor();
+//		String campoDB= formula;
+//		Object ret = elp.eval(campoDB);
+		return elp.eval(formula).toString();
 	}
 	
 }

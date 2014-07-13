@@ -15,8 +15,11 @@ import java.util.List;
 @Entity
 @NamedQuery(name="Encuestaalumno.findAll", query="SELECT e FROM EncuestaAlumno e")
 @NamedQueries({  
-	@NamedQuery(name="Encuestaalumno.findId", query="SELECT u FROM EncuestaAlumno u WHERE u.idEncuestaAlumno = ?1 "),
-	@NamedQuery(name="Encuestaalumno.findIdUsuario", query="SELECT u FROM EncuestaAlumno u WHERE u.usuario.idUsuario = ?1 ")
+	@NamedQuery(name="Encuestaalumno.findId", query="SELECT u FROM EncuestaAlumno u WHERE u.idEncuestaAlumno = ?1 "),//resolvio_d in(0,1)
+	@NamedQuery(name="Encuestaalumno.findIdEncuestaProfesor", query="SELECT u FROM EncuestaAlumno u WHERE u.encuestaprofesor.idEncuestaProfesor = ?1 "),
+	@NamedQuery(name="Encuestaalumno.findIdUsuario", query="SELECT u FROM EncuestaAlumno u WHERE u.usuario.idUsuario = ?1 and u.resolvioD in(0,1) ")
+
+
 })
 public class EncuestaAlumno implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -35,6 +38,10 @@ public class EncuestaAlumno implements Serializable {
 
 	@Column(name="resolvio_d")
 	private int resolvioD;
+	
+	
+	@Column(name="numero_alumnos_validos")
+	private String numeroAlumnosValidos;
 
 	//bi-directional many-to-one association to Encuestaprofesor
 	@ManyToOne
@@ -121,6 +128,14 @@ public class EncuestaAlumno implements Serializable {
 		marcada.setEncuestaalumno(null);
 
 		return marcada;
+	}
+
+	public String getNumeroAlumnosValidos() {
+		return numeroAlumnosValidos;
+	}
+
+	public void setNumeroAlumnosValidos(String numeroAlumnosValidos) {
+		this.numeroAlumnosValidos = numeroAlumnosValidos;
 	}
 
 }

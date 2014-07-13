@@ -1,9 +1,19 @@
 package com.encuesta.model;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 
 /**
@@ -12,6 +22,10 @@ import java.util.List;
  */
 @Entity
 @NamedQuery(name="Numeroencuesta.findAll", query="SELECT n FROM NumeroEncuesta n")
+@NamedQueries({  
+	@NamedQuery(name="Numeroencuesta.findId", query="SELECT u FROM NumeroEncuesta u WHERE u.idNumeroEncuesta = ?1 "),
+	@NamedQuery(name="Numeroencuesta.findNumeroReferente", query="SELECT u FROM NumeroEncuesta u WHERE u.numeroReferente like ?1   ")
+})
 public class NumeroEncuesta implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -21,6 +35,11 @@ public class NumeroEncuesta implements Serializable {
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date fecha;
+	
+	@Column(name= "numero_referente")
+	private String numeroReferente;
+	 
+	private String formula;
 
 	//bi-directional many-to-one association to Encuesta
 	@OneToMany(mappedBy="numeroencuesta")
@@ -92,5 +111,25 @@ public class NumeroEncuesta implements Serializable {
 
 		return pregunta;
 	}
+
+ 
+
+	public String getFormula() {
+		return formula;
+	}
+
+	public void setFormula(String formula) {
+		this.formula = formula;
+	}
+
+	public String getNumeroReferente() {
+		return numeroReferente;
+	}
+
+	public void setNumeroReferente(String numeroReferente) {
+		this.numeroReferente = numeroReferente;
+	}
+
+ 
 
 }

@@ -19,7 +19,7 @@ $(document).ready(function() {
 });
 </script>
 <select class="form-control"  id="cboProfesor2"   name="cboProfesor" >
-	<option value="0">Seleccionar</option> 
+<!-- 	<option value="0">Seleccionar</option>  -->
 	<c:forEach var="x" items="${lProfesor}"  > 
 	<option value="${x.usuario.idUsuario}">${x.usuario.apellidoPaterno} ${x.usuario.apellidoMaterno} ${x.usuario.nombre}(${x.usuario.codigo})</option>
 	</c:forEach>

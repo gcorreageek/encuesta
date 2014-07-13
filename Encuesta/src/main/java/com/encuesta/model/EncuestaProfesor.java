@@ -15,6 +15,7 @@ import java.util.List;
 @NamedQuery(name="Encuestaprofesor.findAll", query="SELECT e FROM EncuestaProfesor e")
 @NamedQueries({  
 	@NamedQuery(name="Encuestaprofesor.findId", query="SELECT u FROM EncuestaProfesor u WHERE u.idEncuestaProfesor = ?1 "),
+	@NamedQuery(name="Encuestaprofesor.findIdProfesor", query="SELECT u FROM EncuestaProfesor u WHERE u.usuario.idUsuario = ?1 "),
 	@NamedQuery(name="Encuestaprofesor.findIdEncuestaIdProfesor", query="SELECT u FROM EncuestaProfesor u WHERE u.encuesta.idEncuesta = ?1 and u.usuario.idUsuario = ?2 ")
 })
 public class EncuestaProfesor implements Serializable {

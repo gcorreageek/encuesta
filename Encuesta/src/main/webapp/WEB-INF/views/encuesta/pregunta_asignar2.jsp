@@ -3,11 +3,11 @@
 <jsp:include page="../plantilla/arriba.jsp"></jsp:include>
 <div class="container-fluid" id="pcont">
 	<div class="page-head">
-      <h2>Asignar Pregunta</h2>
+      <h2>Registrar Preguntas</h2>
       <ol class="breadcrumb">
         <li><a href="#">Inicio</a></li>
         <li><a href="#">Encuesta</a></li>
-        <li class="active">Asignar Pregunta</li>
+        <li class="active">Registrar Preguntas</li>
       </ol>
     </div>
   <div class="cl-mcont">   
@@ -16,16 +16,20 @@
 		<div class="block-flat"> 
 			<div class="content">
 	            <div class="form-horizontal group-border-dashed"   style="border-radius: 0px;">
-	            <form action="${pageContext.request.contextPath}/encuesta/asignacionpreguntas_guardar.html" method="post"  >
+	            <form action="${pageContext.request.contextPath}/encuesta/asignacionpreguntas_guardar2.html" method="post"  >
+	              <span style="color:red" >${mensaje_alert}</span>
 	              <div class="form-group">
-	                <label class="col-sm-3 control-label">Encuesta</label>
+	                <label class="col-sm-3 control-label">Numero Referente</label>
 	                <div class="col-sm-6" id="divCboModalidad"  >
-	                  <select class="form-control"  id="cboEncuesta"  name="cboEncuesta" >
-	                    <option value="0">Seleccionar</option> 
-	                    <c:forEach   var="x" items="${lEncuesta}"  >
-	                    	<option value="${x.idEncuesta}">${x.nombreReferente}</option> 	
-	                    </c:forEach>
-	                  </select>									
+	                   <input type="text" name="numeroReferente"   class="form-control"  />									
+	                </div>
+	              </div>
+	              <div id="divFormulas"  >
+	              </div>
+	               <div class="form-group">
+	                <label class="col-sm-3 control-label">Formula</label>
+	                <div class="col-sm-6" id="divCboModalidad"  >
+	                   <input type="text" name="formula"   class="form-control"  />									
 	                </div>
 	              </div>
 	              <div class="form-group" style="text-align: center" >
@@ -71,13 +75,10 @@
 					</div>
 				  </div>
 				  <div class="form-group">
-	                <label class="col-sm-3 control-label">Opciones</label>
-	                <div class="col-sm-6"    >
-	                  <select class="form-control"  id="cboOpciones">
-	                    <option value="1">Verdadero</option>
-	                    <option value="2">Falso</option> 
-	                  </select>									
-	                </div>
+	                <label class="col-sm-3 control-label">Puntaje</label>
+	                <div class="col-sm-6">
+						<input class="form-control"   type="text" name="puntajeAlternativa" id="txtPuntajeAlternativa"  >
+					</div>
 	              </div>
 				  <div class="form-group col-sm-9" style="text-align: right;"> 
 				  <input type="button" id="btnAgregarAltenativa"  value="Agregar" class="btn btn-primary btn-rad"  /> 
@@ -86,8 +87,7 @@
 	            </div>
 	          </div>
  			</div>   
- 			<div id="divPreguntas"  >
- 			 
+ 			<div id="divPreguntas"  > 
 			</div> 
 	               
 	                
@@ -116,13 +116,23 @@ $(document).ready(function() {
 		$.post("${pageContext.request.contextPath}/encuesta/pregunta_cbo.html" ,function(data){
 		 	$("#divCboPreguntas").html(data);
 		}); 
+		$.post("${pageContext.request.contextPath}/encuesta/pregunta_cargarformula.html" ,function(data){
+		 	$("#divFormulas").html(data);
+		});
 		
 	}, 1000);
 	
 	$("#btnAgregarPregunta").click(function(){
 		var txtPregunta = $("#txtPregunta").val();
 		var txtPuntaje = $("#txtPuntaje").val(); 
-		
+		if(txtPregunta==''){
+			alert('Ingrese un valor valido en pregunta');
+			return;
+		} 
+		if(txtPuntaje==''){
+			alert('Ingrese un valor valido en puntaje');
+			return;
+		} 
 		$.post("${pageContext.request.contextPath}/encuesta/pregunta_agregar.html",{
 			"txtPregunta":txtPregunta,
 			"txtPuntaje":txtPuntaje
@@ -132,19 +142,36 @@ $(document).ready(function() {
 		$.post("${pageContext.request.contextPath}/encuesta/pregunta_cbo.html" ,function(data){
 		 	$("#divCboPreguntas").html(data);
 		});  
+		$.post("${pageContext.request.contextPath}/encuesta/pregunta_cargarformula.html" ,function(data){
+		 	$("#divFormulas").html(data);
+		});
 	});
 	$("#btnAgregarAltenativa").click(function(){
 		var cboPregunta = $("#cboPregunta").val();
 		var txtAlternativa = $("#txtAlternativa").val(); 
-		var cboOpciones = $("#cboOpciones").val();
-		
+		var txtPuntajeAlternativa = $("#txtPuntajeAlternativa").val();
+		if(cboPregunta==0){
+			alert('Seleccione una pregunta');
+			return;
+		} 
+		if(txtAlternativa==''){
+			alert('Ingrese un valor valido en alterntiva');
+			return;
+		}
+		if(txtPuntajeAlternativa==''){
+			alert('Ingrese un valor valido en puntaje de la alternativa');
+			return;
+		}
 		$.post("${pageContext.request.contextPath}/encuesta/alternativa_agregar.html",{
 			"cboPregunta":cboPregunta,
 			"txtAlternativa":txtAlternativa,
-			"cboOpciones":cboOpciones
+			"txtPuntajeAlternativa":txtPuntajeAlternativa
 		},function(data){
 		 	$("#divPreguntas").html(data);
-		});  
+		}); 
+		$.post("${pageContext.request.contextPath}/encuesta/pregunta_cargarformula.html" ,function(data){
+		 	$("#divFormulas").html(data);
+		});
 	});
 
 	
